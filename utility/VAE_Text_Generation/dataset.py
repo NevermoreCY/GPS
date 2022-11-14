@@ -32,7 +32,7 @@ class MyDataset(data.Dataset):
     def __init__(self, path, text_field, **kwargs):
         fields = [('text', text_field)]
         examples = []
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf8') as f:
             for text in f:
                 examples.append(data.Example.fromlist([text], fields))
         super(MyDataset, self).__init__(examples, fields, **kwargs)

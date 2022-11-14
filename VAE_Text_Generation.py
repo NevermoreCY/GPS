@@ -160,11 +160,11 @@ def generate_sentences(n_examples, save=0):
         out.append(out_str[:-6])
     if save:
         original = []
-        with open('./data/' + candidates_path, 'r') as fin:
+        with open('./data/' + candidates_path, 'r', encoding='utf-8') as fin:
             for line in fin:
                 original.append(line.strip())
         fname = './data/' + opt.dataset + '_candidates.txt'
-        with open(fname, 'w') as fout:
+        with open(fname, 'w',encoding='utf-8') as fout:
             for i in out + original:
                 fout.write(i)
                 fout.write('\n')

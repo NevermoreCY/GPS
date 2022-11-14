@@ -9,7 +9,7 @@ import glog
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub
-import tensorflow_text  # NOQA: required for PolyAI encoders.
+# import tensorflow_text  # NOQA: required for PolyAI encoders.
 # import tf_sentencepiece  # NOQA: it is used when importing USE_QA.
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
@@ -125,6 +125,7 @@ class ConveRTEncoder(Encoder):
     def __init__(self, uri):
         """Create a new `ConveRTEncoder` object."""
         self._session = tf.Session(graph=tf.Graph())
+        uri = "tmp/model.tar.gz"
         with self._session.graph.as_default():
             glog.info("Loading %s model from tensorflow hub", uri)
             embed_fn = tensorflow_hub.Module(uri)

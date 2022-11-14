@@ -12,12 +12,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def main(args):
     print('Start Main...')
+    print('start module 1')
     ''' Read Candidates from Module 1 '''
     candidates = read_candidates('./data/' + args.dataset + '_candidates.txt')  # Load generated candidates from Module 1.
     train_x_text, train_y_text, test_x_text, test_y_text = initialize_train_test_dataset(args.dataset)
     contexts_train, responses_train = convert_to_contexts_responses(train_x_text, train_y_text)
 
-
+    print('Start module 2 ')
     ''' Module 2: Candidates Pruning by Grammaticality '''
     candidates = extract_good_candidates_by_LQ(candidates, LQ_thres=0.52, num_of_generation=30000)
     method = to_method_object('TF_IDF')
@@ -25,10 +26,10 @@ def main(args):
     good_candidates_index = method.sort_responses(test_x_text, candidates, min(args.kpq, len(candidates)))  # kpq: Top k candidates per query, for better computation.
     good_candidates = [[candidates[y] for y in x] for x in good_candidates_index]
 
-
+    print('Start module 3 ')
     ''' Module 3: Response Selection '''
     METHODS = ['TF_IDF', 'BM25', 'USE_SIM', 'USE_MAP', 'USE_LARGE_SIM', 'USE_LARGE_MAP', 'ELMO_SIM', 'ELMO_MAP', 'BERT_SMALL_SIM', 'BERT_SMALL_MAP', 'BERT_LARGE_SIM', 'BERT_LARGE_MAP', 'USE_QA_SIM', 'USE_QA_MAP', 'CONVERT_SIM', 'CONVERT_MAP']
-    for method_name in METHODS[14:16]:
+    for method_name in METHODS[8:10]:
         print(method_name)
         method = to_method_object(method_name)
         method.train(contexts_train, responses_train)

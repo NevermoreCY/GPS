@@ -10,7 +10,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ''' Read Data '''
 def read_candidates(fname):
     candidates = []
-    for line in open(fname, 'r'):
+    for line in open(fname, 'r',encoding='utf-8'):
         candidates.append(line.strip())
     return candidates
 
@@ -30,9 +30,26 @@ def initialize_train_test_dataset(dataset):
 
         X_text, Y_text = [], []
         line_num = 0
+        bad_count = 0
         for x, y, z in zip(xlist, ylist, zlist):
             x = x.strip().split('\n')
+            # print("x is", x )
+            # print("y is " , y )
+            # print("z is ", z )
+            # print(y.strip('[]').split(', '))
             for i in y.strip('[]').split(', '):
+                #print(i)
+                #print(len(x), int(i)-1)
+                if len(x) <= int(i)-1:
+                    print("bad one to remove")
+                    #print(x)
+                    #print(y)
+                    bad_count += 1
+                    i = len(x)
+
+                # print('. '.join(x[int(i) - 1]))
+                # print('. '.join(x[int(i) - 1].split('. ')))
+                # print('. '.join(x[int(i) - 1].split('. ')[1:]))
                 X_text.append('. '.join(x[int(i) - 1].split('. ')[1:]).strip('\t'))  # Only the hate speech line.
                 temp = []
                 for j in split_response_func(z):
@@ -41,6 +58,7 @@ def initialize_train_test_dataset(dataset):
                     temp.append(j)
                 Y_text.append(temp)
                 line_num += 1
+        print("bad data count", bad_count)
     elif dataset == 'conan':
         all_text = [json.loads(line) for line in open('./data/CONAN/CONAN.json', 'r')]
         EN_text = [x for x in all_text[0]['conan'] if x['cn_id'][:2] == 'EN']
@@ -62,7 +80,7 @@ def read_EMNLP2019(dataset_fname):
     xlist = []
     ylist = []
     zlist = []
-    with open(dataset_fname, 'r') as f:
+    with open(dataset_fname, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             x = row['text']
